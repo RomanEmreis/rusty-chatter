@@ -1,4 +1,4 @@
-use tokio::sync::{mpsc::{self, UnboundedSender}, RwLock};
+use tokio::sync::{mpsc::UnboundedSender, RwLock};
 use tungstenite::Message;
 use std::collections::HashMap;
 use std::sync::{
@@ -7,7 +7,7 @@ use std::sync::{
 };
 
 pub(super) struct Users {
-    pub(super) connections: Arc<RwLock<HashMap<usize, mpsc::UnboundedSender<Message>>>>,
+    pub(super) connections: Arc<RwLock<HashMap<usize, UnboundedSender<Message>>>>,
     next_id: AtomicUsize 
 }
 

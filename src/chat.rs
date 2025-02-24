@@ -40,10 +40,6 @@ async fn user_disconnected(id: usize, users: &Users) {
 }
 
 async fn handle_message(id: usize, msg: Message, users: &Users) {
-    if !msg.is_text() {
-        return;
-    };
-
     let new_msg = format!("[User#{}]: {}", id, msg);
     for (&uid, tx) in users.connections.read().await.iter() {
         if id != uid {
