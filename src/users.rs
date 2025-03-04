@@ -1,5 +1,4 @@
 use tokio::sync::{mpsc::UnboundedSender, RwLock};
-use tungstenite::Message;
 use std::collections::HashMap;
 use std::sync::{
     atomic::{AtomicUsize, Ordering},
@@ -7,7 +6,7 @@ use std::sync::{
 };
 
 pub(super) struct Users {
-    pub(super) connections: Arc<RwLock<HashMap<usize, UnboundedSender<Message>>>>,
+    pub(super) connections: Arc<RwLock<HashMap<usize, UnboundedSender<String>>>>,
     next_id: AtomicUsize 
 }
 
@@ -21,7 +20,7 @@ impl Default for Users {
 }
 
 impl Users {
-    pub(super) async fn add(&self, tx: UnboundedSender<Message>) -> usize {
+    pub(super) async fn add(&self, tx: UnboundedSender<String>) -> usize {
         let id = self.new_id();
         tracing::trace!("new user connected: {}", id);
         
@@ -29,7 +28,6 @@ impl Users {
             .write()
             .await
             .insert(id, tx);
-
         id
     }
 

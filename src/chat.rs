@@ -1,8 +1,7 @@
 use volga::{di::Dc, ws::WebSocket};
-use futures_util::{SinkExt, StreamExt, TryFutureExt};
+use futures_util::{StreamExt, TryFutureExt};
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::UnboundedReceiverStream;
-use tungstenite::Message;
 use super::users::Users;
 
 pub(super) async fn user_connected(ws: WebSocket, users: Dc<Users>) {
@@ -21,7 +20,7 @@ pub(super) async fn user_connected(ws: WebSocket, users: Dc<Users>) {
 
     let id = users.add(tx).await;
 
-    while let Some(result) = user_rx.next().await {
+    while let Some(result) = user_rx.recv::<String>().await {
         match result {
             Ok(msg) => handle_message(id, msg, &users).await,
             Err(e) => {
@@ -39,11 +38,11 @@ async fn user_disconnected(id: usize, users: &Users) {
     users.remove(id).await;
 }
 
-async fn handle_message(id: usize, msg: Message, users: &Users) {
+async fn handle_message(id: usize, msg: String, users: &Users) {
     let new_msg = format!("[User#{}]: {}", id, msg);
     for (&uid, tx) in users.connections.read().await.iter() {
         if id != uid {
-            if let Err(_err) = tx.send(new_msg.clone().into()) {}
+            if let Err(_err) = tx.send(new_msg.clone()) {}
         }
     }
 }

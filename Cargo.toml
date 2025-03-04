@@ -7,7 +7,6 @@ edition = "2024"
 futures-util = "0.3.31"
 tokio = { version = "1.42.0", features = ["full"] }
 tokio-stream = "0.1.17"
-tungstenite = "0.26.2"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-volga = { version = "0.5.3", features = ["di","tracing","static-files","ws"] }
+volga = { version = "0.5.4", features = ["di","tracing","static-files","ws"] }
